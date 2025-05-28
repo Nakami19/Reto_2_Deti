@@ -22,7 +22,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         {
             //Activo la plataforma para que se muestre
             plataforma.gameObject.SetActive(true);
-            // Espera entre cada plataforma
+            // Espera entre cada plataforma para mostrar la siguiente
             yield return new WaitForSeconds(0.5f); 
         }
     }
