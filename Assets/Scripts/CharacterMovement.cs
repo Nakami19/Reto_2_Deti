@@ -15,6 +15,7 @@ public class CharacterMovement : MonoBehaviour
     public float jumpHeight = 5f;
     Vector3 currentMoveVelocity = Vector3.zero;
     [SerializeField] float acceleration = 10f;
+    [SerializeField] float bounceHeight = 15f;
 
 
     [Header("Variables para checkear wallrun")]
@@ -46,6 +47,8 @@ public class CharacterMovement : MonoBehaviour
     float verticalVelocity;
     bool wantJump;
     bool wantWallJump;
+    bool hasBounced = false;
+
 
     #endregion
 
@@ -126,6 +129,11 @@ public class CharacterMovement : MonoBehaviour
     {
         if (controller.isGrounded)
         {
+            if (hasBounced)
+            {
+                hasBounced = false;
+                return; // Evita que sobrescriba verticalVelocity
+            }
             if (wantJump)
             {
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity); //Salto                
@@ -210,5 +218,21 @@ public class CharacterMovement : MonoBehaviour
 
     #endregion
 
+    // Detectar colision
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        //Detectar trampolin
+        if (hit.collider.CompareTag("Trampoline"))
+        {
+            //Llamo al salto
+            Bounce(bounceHeight); 
+        }
+    }
 
+    //Funcion para impulsar salto
+    public void Bounce(float force)
+    {
+        verticalVelocity = Mathf.Sqrt(force * -2f * gravity);
+        hasBounced = true;
+    }
 }
